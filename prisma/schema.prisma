@@ -25,6 +25,7 @@ model User {
   password  String
   names     String
   addressId Int
+  isAdmin   Boolean      @default(false)
   address   UserAddress  @relation(fields: [addressId], references: [id])
   device    UserDevice[]
 
