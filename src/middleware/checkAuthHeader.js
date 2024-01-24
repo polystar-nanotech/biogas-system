@@ -1,11 +1,11 @@
-import { verifyToken } from "../utils";
+import { verifyToken } from '../utils';
 
 export const CheckAndVerifyAuthHeader = (req, res, next) => {
-  const authorization = req.headers["authorization"];
+  const authorization = req.headers['authorization'];
   if (!authorization) {
     return res.status(401).json({
       statusCode: 401,
-      message: "Not authenticated, please login!"
+      message: 'Not authenticated, please login!'
     });
   }
 
@@ -13,7 +13,7 @@ export const CheckAndVerifyAuthHeader = (req, res, next) => {
   if (!token) {
     return res.status(401).json({
       statusCode: 401,
-      message: "Not authenticated, please login!"
+      message: 'Not authenticated, please login!'
     });
   }
 
@@ -22,6 +22,6 @@ export const CheckAndVerifyAuthHeader = (req, res, next) => {
     req.user = data;
     next();
   } catch (error) {
-    res.status(401).json({ statusCode: 401, message: error.message })
+    res.status(401).json({ statusCode: 401, message: error.message });
   }
-} 
+};

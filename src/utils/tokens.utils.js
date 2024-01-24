@@ -11,8 +11,7 @@ export const verifyToken = (token) => {
   try {
     const payload = Jwt.verify(token, process.env.JWT_SECRETE);
     return payload;
-
   } catch (error) {
-    throw new Error("Your token has expired, login again!");
+    throw new Error('Your token has expired, login again!');
   }
-}
+};

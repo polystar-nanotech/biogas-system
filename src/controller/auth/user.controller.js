@@ -1,4 +1,10 @@
-import { comparePassword, db, generateToken, hashPassword } from '../../utils';
+import {
+  comparePassword,
+  db,
+  generateToken,
+  generateAndReturnUUID,
+  hashPassword
+} from '../../utils';
 
 export const CreateUser = async (req, res) => {
   const body = req.body;
@@ -33,11 +39,19 @@ export const CreateUser = async (req, res) => {
       },
       select: { names: true, telephone: true }
     });
+    const deviceUUID = generateAndReturnUUID();
+
+    // Save device
+    const device = await db.userDevice.create({
+      data: { deviceUUID },
+      select: { id: true, deviceUUID: true }
+    });
+
     return res.status(201).json({
       statusCode: 201,
       success: true,
       message: 'Successfully Registered.',
-      user: { ...userData, address: userAddress }
+      user: { ...userData, address: userAddress, device }
     });
   } catch (error) {
     console.log(error);
@@ -55,7 +69,13 @@ export const LoginUser = async (req, res) => {
   // Check if we have the user with same phone number
   const user = await db.user.findFirst({ where: { telephone: body.telephone } });
   if (!user) {
-    return res.status(400).json({ statusCode: 400, success: false, message: "We can not find your account, try again" })
+    return res
+      .status(400)
+      .json({
+        statusCode: 400,
+        success: false,
+        message: 'We can not find your account, try again'
+      });
   }
 
   // Check if password is the same
@@ -67,14 +87,14 @@ export const LoginUser = async (req, res) => {
     return res.status(200).json({
       statusCode: 200,
       success: true,
-      message: "Login successfully",
+      message: 'Login successfully',
       token
     });
   } else {
     return res.status(406).json({
       statusCode: 406,
-      success: false, 
-      message: "Password is incorrect, try again!"
-    })
+      success: false,
+      message: 'Password is incorrect, try again!'
+    });
   }
-}
+};
