@@ -20,3 +20,8 @@ export const RegisterUserObject = z.object({
       })
   })
 });
+
+export const LoginUserObject = z.object({
+  telephone: z.string().min(1, { message: 'Telephone number is required' }),
+  password: z.string().min(6, { message: 'Password must be at least 6 characters long' })
+});

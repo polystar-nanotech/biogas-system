@@ -1,4 +1,4 @@
-import { db, hashPassword } from '../../utils';
+import { comparePassword, db, generateToken, hashPassword } from '../../utils';
 
 export const CreateUser = async (req, res) => {
   const body = req.body;
@@ -48,3 +48,33 @@ export const CreateUser = async (req, res) => {
     });
   }
 };
+
+export const LoginUser = async (req, res) => {
+  const body = req.body;
+
+  // Check if we have the user with same phone number
+  const user = await db.user.findFirst({ where: { telephone: body.telephone } });
+  if (!user) {
+    return res.status(400).json({ statusCode: 400, success: false, message: "We can not find your account, try again" })
+  }
+
+  // Check if password is the same
+  const passwordMatch = await comparePassword(body.password, user.password);
+  if (passwordMatch) {
+    // Generate token
+    const token = generateToken({ id: user.id, isAdmin: user.isAdmin, names: user.names });
+
+    return res.status(200).json({
+      statusCode: 200,
+      success: true,
+      message: "Login successfully",
+      token
+    });
+  } else {
+    return res.status(406).json({
+      statusCode: 406,
+      success: false, 
+      message: "Password is incorrect, try again!"
+    })
+  }
+}
