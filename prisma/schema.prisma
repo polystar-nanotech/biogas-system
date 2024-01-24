@@ -21,10 +21,11 @@ model UserAddress {
 
 model User {
   id        Int          @id @default(autoincrement())
-  telephone String       @unique
+  telephone String       
   password  String
   names     String
   addressId Int
+  isAdmin   Boolean      @default(false)
   address   UserAddress  @relation(fields: [addressId], references: [id])
   device    UserDevice[]
 
@@ -40,7 +41,7 @@ model BiogasData {
   ch4         Float
   co2         Float
   deviceUUID  String
-  device      UserDevice @relation(fields: [deviceUUID], references: [deviceUUID])
+  device      UserDevice @relation(fields: [deviceUUID], references: [deviceUUID], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -49,7 +50,7 @@ model BiogasData {
 model UserDevice {
   id         Int          @id @default(autoincrement())
   deviceUUID String       @unique
-  user       User         @relation(fields: [userId], references: [id])
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     Int
   biogasData BiogasData[]
 

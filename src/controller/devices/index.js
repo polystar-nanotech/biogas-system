@@ -1,1 +1,1 @@
-export * from "./device.controller"
+export * from './device.controller';
