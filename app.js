@@ -10,7 +10,7 @@ const port = process.env.PORT || 3000;
 
 // Routes
 app.use('/api/v1/auth', AuthRouter);
-app.use('/api/v1/devices', CheckAndVerifyAuthHeader, DeviceRouter)
+app.use('/api/v1/devices', CheckAndVerifyAuthHeader, DeviceRouter);
 
 // Start the server
 app.listen(port, () => {
