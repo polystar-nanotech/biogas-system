@@ -37,13 +37,13 @@ export const CreateUser = async (req, res) => {
         telephone: body.telephone,
         password
       },
-      select: { names: true, telephone: true }
+      select: { id: true, names: true, telephone: true }
     });
     const deviceUUID = generateAndReturnUUID();
 
     // Save device
     const device = await db.userDevice.create({
-      data: { deviceUUID },
+      data: { deviceUUID, userId: userData.id },
       select: { id: true, deviceUUID: true }
     });
 
@@ -57,7 +57,7 @@ export const CreateUser = async (req, res) => {
     console.log(error);
     return res.status(500).json({
       statusCode: 500,
-      success: true,
+      success: false,
       message: `Something went wrong, try again`
     });
   }
@@ -69,13 +69,11 @@ export const LoginUser = async (req, res) => {
   // Check if we have the user with same phone number
   const user = await db.user.findFirst({ where: { telephone: body.telephone } });
   if (!user) {
-    return res
-      .status(400)
-      .json({
-        statusCode: 400,
-        success: false,
-        message: 'We can not find your account, try again'
-      });
+    return res.status(404).json({
+      statusCode: 404,
+      success: false,
+      message: 'We can not find your account, try again'
+    });
   }
 
   // Check if password is the same
