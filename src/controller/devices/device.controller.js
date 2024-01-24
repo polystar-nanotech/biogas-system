@@ -32,7 +32,7 @@ export const GetAllDevices = async (req, res) => {
     }
   } else {
     try {
-      const devices = await db.userDevice.findFirst({
+      const devices = await db.userDevice.findMany({
         where: { userId: user.id },
         include: { user: userData }
       });
@@ -61,23 +61,19 @@ export const GetOneDevice = async (req, res) => {
       include: { user: { include: { address: true } } }
     });
     if (!device) {
-      return res
-        .status(404)
-        .json({
-          statusCode: 404,
-          success: false,
-          message: 'Device not found, provide correct UUID!'
-        });
+      return res.status(404).json({
+        statusCode: 404,
+        success: false,
+        message: 'Device not found, provide correct UUID!'
+      });
     }
     delete device.user.password;
-    return res
-      .status(200)
-      .json({
-        statusCode: 200,
-        success: true,
-        message: 'Device fetched successfully',
-        data: device
-      });
+    return res.status(200).json({
+      statusCode: 200,
+      success: true,
+      message: 'Device fetched successfully',
+      data: device
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({
