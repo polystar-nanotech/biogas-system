@@ -1,5 +1,5 @@
-import { RegisterUserObject } from "../validators";
-import { formatValidationErrors } from "../utils";
+import { RegisterUserObject } from '../validators';
+import { formatValidationErrors } from '../utils';
 
 export const ValidateData = (req, res, next) => {
   const body = req.body;
@@ -9,9 +9,9 @@ export const ValidateData = (req, res, next) => {
       statusCode: 400,
       success: false,
       message: formatValidationErrors(validateBody.error.issues)
-    })
+    });
   } else {
     req.body = validateBody.data;
     next();
   }
-}
+};

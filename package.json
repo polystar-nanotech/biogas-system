@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --exec babel-node app.js"
+    "dev": "nodemon --exec babel-node app.js",
+    "format": "prettier --write .",
+    "format-check": "prettier --check ."
   },
   "keywords": [],
   "author": "",
