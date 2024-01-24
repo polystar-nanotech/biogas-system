@@ -1,4 +1,4 @@
-import { db } from '../../utils';
+import { db, findDevice } from '../../utils';
 
 const userData = {
   select: {
@@ -56,18 +56,7 @@ export const GetOneDevice = async (req, res) => {
   const deviceUUID = req.params.id;
 
   try {
-    const device = await db.userDevice.findUnique({
-      where: { deviceUUID },
-      include: { user: { include: { address: true } } }
-    });
-    if (!device) {
-      return res.status(404).json({
-        statusCode: 404,
-        success: false,
-        message: 'Device not found, provide correct UUID!'
-      });
-    }
-    delete device.user.password;
+    const device = await findDevice(deviceUUID);
     return res.status(200).json({
       statusCode: 200,
       success: true,
@@ -75,11 +64,48 @@ export const GetOneDevice = async (req, res) => {
       data: device
     });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({
       statusCode: 500,
       success: false,
-      message: 'Error whle getting device, try again!'
+      message: `Error while getting device: ${error.message}`
+    });
+  }
+};
+
+export const getDeviceData = async (req, res) => {
+  const deviceUUID = req.params.id;
+  const user = req.user;
+
+  try {
+    await findDevice(deviceUUID);
+    if (user.isAdmin) {
+      const data = await db.biogasData.findMany({
+        where: { deviceUUID },
+        include: { device: { select: { deviceUUID: true, user: userData } } },
+        orderBy: { createdAt: 'desc' }
+      });
+
+      return res
+        .status(200)
+        .json({ statusCode: 200, success: true, message: `Data for ${deviceUUID}`, data });
+    }
+
+    const dataForOwner = await db.biogasData.findMany({
+      where: { deviceUUID, device: { userId: user.id } },
+      include: { device: { select: { deviceUUID: true, user: userData } } },
+      orderBy: { createdAt: 'desc' }
+    });
+    return res.status(200).json({
+      statusCode: 200,
+      success: true,
+      message: `Data for ${deviceUUID}`,
+      data: dataForOwner
+    });
+  } catch (error) {
+    return res.status(500).json({
+      statusCode: 500,
+      success: false,
+      message: `Error while getting device: ${error.message}`
     });
   }
 };
