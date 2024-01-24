@@ -1,15 +1,16 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-import cors from "cors";
-require("dotenv").config();
+import { config } from 'dotenv';
+import express from 'express';
+import { AuthRouter } from './src/routes';
+config();
+
 const app = express();
+app.use(express.json());
 const port = process.env.PORT || 3000;
 
-app.use(cors());
-app.use(bodyParser.json());
-app.get("/api/v1", (req, res) => {
-  res.send("hello there");
-});
+// Routes
+app.use('/api/v1/auth', AuthRouter);
+
+// Start the server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
