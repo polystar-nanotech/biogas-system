@@ -1,10 +1,12 @@
 import { config } from 'dotenv';
 import express from 'express';
+import cors from "cors"
 import { AuthRouter, DeviceRouter } from './src/routes';
 import { CheckAndVerifyAuthHeader } from './src/middleware';
 config();
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 const port = process.env.PORT || 3000;
 
