@@ -81,12 +81,12 @@ export const LoginUser = async (req, res) => {
   if (passwordMatch) {
     // Generate token
     const token = generateToken({ id: user.id, isAdmin: user.isAdmin, names: user.names });
-  console.log(user)
+    const { id, isAdmin, names, telephone } = user;
     return res.status(200).json({
       statusCode: 200,
       success: true,
       message: 'Login successfully',
-      Data: user,
+      Data: { id, isAdmin, names, telephone },
       token
     });
   } else {

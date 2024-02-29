@@ -21,7 +21,7 @@ model UserAddress {
 
 model User {
   id        Int          @id @default(autoincrement())
-  telephone String       
+  telephone String
   password  String
   names     String
   addressId Int
