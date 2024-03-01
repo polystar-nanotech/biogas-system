@@ -3,7 +3,6 @@ import { formatValidationErrors } from '../utils';
 
 export const ValidateData = (req, res, next) => {
   const body = req.body;
-  console.log(body)
   const validateBody = RegisterUserObject.safeParse(body);
   if (!validateBody.success) {
     return res.status(400).json({
