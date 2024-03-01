@@ -6,6 +6,7 @@ import {
   hashPassword
 } from '../../utils';
 
+// User controller to handle user registration
 export const CreateUser = async (req, res) => {
   const body = req.body;
   // Check if user phone number already exists
@@ -63,6 +64,7 @@ export const CreateUser = async (req, res) => {
   }
 };
 
+// User controller to handle user login
 export const LoginUser = async (req, res) => {
   const body = req.body;
 
@@ -82,11 +84,14 @@ export const LoginUser = async (req, res) => {
     // Generate token
     const token = generateToken({ id: user.id, isAdmin: user.isAdmin, names: user.names });
   console.log(user)
+    // Destructure the required data
+    const { id, isAdmin, names, telephone } = user;
     return res.status(200).json({
       statusCode: 200,
       success: true,
       message: 'Login successfully',
       Data: user,
+      Data: { id, isAdmin, names, telephone },
       token
     });
   } else {

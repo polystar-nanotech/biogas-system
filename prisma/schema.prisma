@@ -3,10 +3,11 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider = "mysql" // use the MySQL provider
+  url      = env("DATABASE_URL") // env() reads from the.env file
 }
 
+// User address model
 model UserAddress {
   id        Int    @id @default(autoincrement())
   province  String
@@ -19,9 +20,10 @@ model UserAddress {
   users     User[]
 }
 
+// User model
 model User {
   id        Int          @id @default(autoincrement())
-  telephone String       
+  telephone String
   password  String
   names     String
   addressId Int
@@ -33,6 +35,7 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
+// Biogas data model
 model BiogasData {
   id          Int        @id @default(autoincrement())
   volume      Float
@@ -47,6 +50,7 @@ model BiogasData {
   updatedAt DateTime @updatedAt
 }
 
+// User device model
 model UserDevice {
   id         Int          @id @default(autoincrement())
   deviceUUID String       @unique

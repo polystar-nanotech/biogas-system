@@ -5,14 +5,17 @@ import { AuthRouter, DeviceRouter } from './src/routes';
 import { CheckAndVerifyAuthHeader } from './src/middleware';
 config();
 
+// Create the express app
 const app = express();
-app.use(cors());
-app.use(express.json());
-const port = process.env.PORT || 3000;
+
+// Middlewares
+app.use(cors()); // Enable CORS
+app.use(express.json()); // Parse JSON bodies
+const port = process.env.PORT || 3000; // Set the port
 
 // Routes
-app.use('/api/v1/auth', AuthRouter);
-app.use('/api/v1/devices', CheckAndVerifyAuthHeader, DeviceRouter);
+app.use('/api/v1/auth', AuthRouter); // Authentication routes
+app.use('/api/v1/devices', CheckAndVerifyAuthHeader, DeviceRouter); // Device routes
 
 // Start the server
 app.listen(port, () => {
