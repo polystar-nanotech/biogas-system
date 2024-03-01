@@ -6,10 +6,13 @@ const userData = {
     telephone: true
   }
 };
+
+// Get all devices controller
 export const GetAllDevices = async (req, res) => {
   const user = req.user;
 
   if (user.isAdmin) {
+    // Find data for all devices
     try {
       const devices = await db.userDevice.findMany({
         orderBy: { createdAt: 'desc' },
@@ -31,6 +34,7 @@ export const GetAllDevices = async (req, res) => {
       });
     }
   } else {
+    // If not the admin it should render the devices of the user
     try {
       const devices = await db.userDevice.findMany({
         where: { userId: user.id },
@@ -52,6 +56,7 @@ export const GetAllDevices = async (req, res) => {
   }
 };
 
+// Get a single device
 export const GetOneDevice = async (req, res) => {
   const deviceUUID = req.params.id;
 
@@ -72,12 +77,13 @@ export const GetOneDevice = async (req, res) => {
   }
 };
 
+// Get data for the specific device
 export const getDeviceData = async (req, res) => {
   const deviceUUID = req.params.id;
   const user = req.user;
 
   try {
-    await findDevice(deviceUUID);
+    await findDevice(deviceUUID); //
     if (user.isAdmin) {
       const data = await db.biogasData.findMany({
         where: { deviceUUID },
