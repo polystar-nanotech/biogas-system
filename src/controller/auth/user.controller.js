@@ -108,7 +108,10 @@ export const ChangePassword = async (req, res) => {
 
   try {
     // Find user by ID
-    const user = await db.user.findFirst({ where: { id: parseInt(userId) } });
+     // Convert userId to an integer
+     const userIdInt = parseInt(userId, 10);
+
+    const user = await db.user.findFirst({ where: { id: userIdInt } });
     if (!user) {
       return res.status(404).json({
         statusCode: 404,
