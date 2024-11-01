@@ -101,3 +101,51 @@ export const LoginUser = async (req, res) => {
     });
   }
 };
+
+// Function to handle password change
+export const ChangePassword = async (req, res) => {
+  const { userId, currentPassword, newPassword } = req.body;
+
+  try {
+    // Find user by ID
+    const user = await db.user.findFirst({ where: { id: userId } });
+    if (!user) {
+      return res.status(404).json({
+        statusCode: 404,
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Check if the current password matches the one in the database
+    const passwordMatch = await comparePassword(currentPassword, user.password);
+    if (!passwordMatch) {
+      return res.status(403).json({
+        statusCode: 403,
+        success: false,
+        message: 'Current password is incorrect'
+      });
+    }
+    // Hash the new password
+    const hashedNewPassword = await hashPassword(newPassword);
+
+    // Update the password in the database
+    await db.user.update({
+      where: { id: userId },
+      data: { password: hashedNewPassword }
+    });
+
+    return res.status(200).json({
+      statusCode: 200,
+      success: true,
+      message: 'Password changed successfully'
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      statusCode: 500,
+      success: false,
+      message: 'Something went wrong, please try again later'
+    });
+  }
+};
