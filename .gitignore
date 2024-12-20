@@ -2,3 +2,6 @@ node_modules
 .env
 prisma/migrations/
 !prisma/migrations/migration_lock.toml
+temp_auto_push.bat
+temp_interactive_push.bat
+branch_structure.json
