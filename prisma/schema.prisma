@@ -3,11 +3,10 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql" // use the MySQL provider
-  url      = env("DATABASE_URL") // env() reads from the.env file
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
-// User address model
 model UserAddress {
   id        Int    @id @default(autoincrement())
   province  String
@@ -17,47 +16,50 @@ model UserAddress {
   village   String
   latitude  String
   longitude String
-  users     User[]
 }
 
-// User model
 model User {
-  id        Int          @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   telephone String
   password  String
   names     String
   addressId Int
-  isAdmin   Boolean      @default(false)
-  address   UserAddress  @relation(fields: [addressId], references: [id])
-  device    UserDevice[]
-
+  isAdmin   Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([addressId], map: "User_addressId_fkey")
 }
 
-// Biogas data model
 model BiogasData {
-  id          Int        @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   volume      Float
   pressure    Float
   temperature Float
   ch4         Float
   co2         Float
   deviceUUID  String
-  device      UserDevice @relation(fields: [deviceUUID], references: [deviceUUID], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@index([deviceUUID], map: "BiogasData_deviceUUID_fkey")
 }
 
-// User device model
 model UserDevice {
-  id         Int          @id @default(autoincrement())
-  deviceUUID String       @unique
-  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id         Int      @id @default(autoincrement())
+  deviceUUID String   @unique
   userId     Int
-  biogasData BiogasData[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@index([userId], map: "UserDevice_userId_fkey")
+}
+
+model Testimonial {
+  id         Int      @id @default(autoincrement())
+  names      String
+  occupation String   @db.Text
+  text       String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
